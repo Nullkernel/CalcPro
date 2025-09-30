@@ -1,4 +1,4 @@
-# 🧮 Advanced Python Calculator:
+# 🧮 CalcPro (Advanced Calculator):
 
 A feature-rich, colorful command-line calculator with multiple operation modes, scientific functions, and an intuitive user interface.
 
@@ -40,31 +40,31 @@ A feature-rich, colorful command-line calculator with multiple operation modes, 
 ## 🚀 Installation:
 
 ### Prerequisites:
-- Python 3.6 or higher.
+- Python 3.6 (or) higher.
 - Terminal/Command Prompt with ANSI color support (most modern terminals).
 
 ### Setup:
 1. **Download the calculator**:
    ```bash
-   # Clone or download the Calculator.py file.
-   wget -L https://raw.githubusercontent.com/Nullkernel/Calculator/main/Calculator.py
-   # or simply copy the Calculator.py file to your desired directory.
+   # Clone or download the CalcPro.py file.
+   wget -L https://raw.githubusercontent.com/Nullkernel/CalcPro/main/CalcPro.py
+   # or simply copy the CalcPro.py file to your desired directory.
    ```
 
 2. **Make it executable** (optional, for Unix-based systems):
    ```bash
-   chmod +x Calculator.py
+   chmod +x CalcPro.py
    ```
 
 ## 💻 Usage:
 
 ### Starting the Calculator:
 ```bash
-python Calculator.py
+python CalcPro.py
 ```
 or
 ```bash
-python3 Calculator.py
+python3 CalcPro.py
 ```
 
 ### Basic Operations:
@@ -201,7 +201,7 @@ The calculator provides comprehensive error handling for:
 
 ## 🏃‍♂️ Quick Start Guide:
 
-1. **Start the calculator**: `python Calculator.py`
+1. **Start the calculator**: `python CalcPro.py`
 2. **Try a simple calculation**: Enter `2 + 3`
 3. **Explore scientific functions**: Enter `sqrt(25)`
 4. **Check history**: Enter `h`
@@ -218,12 +218,12 @@ This calculator is designed to be extensible. You can easily add new functions b
 
 ## 📄 License:
 
-This project is open source and available under standard Python licensing terms.
+This project is open source and available under standard GNU General Public License v3.0 licensing terms.
 
 ## 🆘 Support:
 
 If you encounter any issues:
-1. Check that you're using Python 3.6 or higher.
+1. Check that you're using Python 3.6 (or) higher.
 2. Ensure your terminal supports ANSI color codes.
 3. Verify that mathematical expressions follow standard notation.
 4. Use the `?` command for function help
