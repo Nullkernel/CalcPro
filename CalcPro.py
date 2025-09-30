@@ -293,7 +293,7 @@ def handle_command(cmd):
         demo_mode()
 
     elif cmd == 'x':  # Exit
-        print(f"{CYAN}# Exiting Calculator. See you next time. Goodbye! ツ{RESET}")
+        print(f"{CYAN}# Exiting Calculator. See you next time. Goodbye! :){RESET}")
         return False
 
     else:  # Treat as expression
@@ -316,7 +316,7 @@ def main():
             if not handle_command(cmd):
                 break
         except KeyboardInterrupt:
-            print(f"\n{CYAN}# Exiting Calculator. Goodbye! ツ{RESET}")
+            print(f"\n{CYAN}# Exiting Calculator. Goodbye! :){RESET}")
             break
         except Exception as e:
             print(f"{RED}# Unexpected error: {e}{RESET}")
