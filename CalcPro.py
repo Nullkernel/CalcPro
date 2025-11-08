@@ -19,7 +19,7 @@ RESET = "\033[0m"
 # Function suggestions and help
 suggestions = {
     "sin": "sin(angle) — sine of angle",
-    "cos": "cos(angle) — cosine of angle", 
+    "cos": "cos(angle) — cosine of angle",
     "tan": "tan(angle) — tangent of angle",
     "asin": "asin(x) — arc sine of x",
     "acos": "acos(x) — arc cosine of x",
@@ -49,8 +49,7 @@ def print_banner():
     print(f"""
 {YELLOW}█▀██████▀█▄▀▀█▀▀▀▀█▀▀▀▄▀█▀▀▄▀█▄▀▀▄▀█▀▀▄▀▀▄▀██▀██▀███████{RESET}
 {YELLOW}█▀███████████████▀▀██████████▄▀▀▄▀████████▄▄████████████{RESET}
-
-        {CYAN}
+{CYAN}
 ░█████╗░░█████╗░██╗░░░░░░█████╗░██████╗░██████╗░░█████╗░
 ██╔══██╗██╔══██╗██║░░░░░██╔══██╗██╔══██╗██╔══██╗██╔══██╗
 ██║░░╚═╝███████║██║░░░░░██║░░╚═╝██████╔╝██████╔╝██║░░██║
@@ -58,18 +57,14 @@ def print_banner():
 ╚█████╔╝██║░░██║███████╗╚█████╔╝██║░░░░░██║░░██║╚█████╔╝
 ░╚════╝░╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝░░░░░╚═╝░░╚═╝░╚════╝░
 {RESET}
-
 {YELLOW}█▀███████████████▀▀█▀▄█▀███▀▀▀█▀▄█▀█▀█▄▀▄▀█▄▀▀█▀▀▀▀█▀▄▄▀{RESET}
 {YELLOW}█▀█████████████▀▀█▀▄▀▄▀█▀▀▀▀███████████▀▀▀█▀▄█▀▄████████{RESET}
-
 {BLUE}# OPERATION MODES:{RESET}
-{CYAN}[1] Addition       [2] Subtraction    [3] Multiplication  [4] Division       [5] Exponentiation
-[6] Basic Mode     [7] Expression Mode [8] Scientific Mode{RESET}
-
+{CYAN}[1] Addition [2] Subtraction [3] Multiplication [4] Division [5] Exponentiation
+[6] Basic Mode [7] Expression Mode [8] Scientific Mode{RESET}
 {BLUE}# ADVANCED OPTIONS:{RESET}
-{CYAN}[h] History        [c] Clear History  [?] Help/Functions  [m] Toggle Deg/Rad [s] Sci-Notation  
-[cl] Clear Screen  [demo] Demo Mode    [x] Exit{RESET}
-
+{CYAN}[h] History [c] Clear History [?] Help/Functions [m] Toggle Deg/Rad [s] Sci-Notation
+[cl] Clear Screen [demo] Demo Mode [x] Exit{RESET}
 {GREEN}# Expression Examples:{RESET} 3+5*2, 2^3, sqrt(16), sin(90), log(100), pi*2
 {GREEN}Enter expressions directly or use numbered options above^^{RESET}
 """)
@@ -101,8 +96,7 @@ def is_parentheses_balanced(expr):
     """Check if parentheses are balanced in expression."""
     stack = []
     for char in expr:
-        if char == '(':
-            stack.append(char)
+        if char == '(': stack.append(char)
         elif char == ')':
             if not stack:
                 return False
@@ -119,44 +113,59 @@ def cbrt(x):
     """Calculate cube root of x."""
     return x ** (1/3) if x >= 0 else -((-x) ** (1/3))
 
+def safe_eval(expr, allowed_names):
+    """Safely evaluate basic mathematical expressions with custom function support."""
+    import ast
+    allowed_nodes = (
+        ast.Expression, ast.BinOp, ast.UnaryOp, ast.Num, ast.Constant,
+        ast.Load, ast.Call, ast.Name, ast.Pow, ast.Mult, ast.Div, ast.Add, ast.Sub, ast.Mod, ast.USub
+    )
+    class SafeEval(ast.NodeVisitor):
+        def visit(self, node):
+            if not isinstance(node, allowed_nodes):
+                raise ValueError(f"Unsafe node: {type(node).__name__}")
+            return super().visit(node)
+        def visit_Name(self, node):
+            if node.id not in allowed_names:
+                raise NameError(f"Unknown function or constant: {node.id}")
+        def visit_Call(self, node):
+            if not isinstance(node.func, ast.Name) or node.func.id not in allowed_names:
+                raise NameError(f"Unknown function: {getattr(node.func,'id',None)}")
+            self.generic_visit(node)
+    tree = ast.parse(expr, mode='eval')
+    SafeEval().visit(tree)
+    return eval(compile(tree, filename="<ast>", mode="eval"), {"__builtins__":None}, allowed_names)
+
 def evaluate_expression(expr):
     """Evaluate mathematical expression safely with extended functions."""
     if not re.match(r'^[0-9a-zA-Z+\-*/.^() x]*$', expr):
         print(f"{RED}# Error: Invalid characters in expression!{RESET}")
         return
-
     if not is_parentheses_balanced(expr):
         print(f"{RED}# Error: Unmatched parentheses in expression!{RESET}")
         return
-
     try:
         # Replace common operators
         expr = expr.replace('x', '*').replace('^', '**')
-
         # Extended allowed functions
         allowed_names = {
             # Basic math
             "sqrt": math.sqrt, "pow": pow, "abs": abs,
             "ceil": math.ceil, "floor": math.floor, "round": round,
             "factorial": factorial, "cbrt": cbrt,
-
             # Trigonometric functions
             "sin": wrap_trig(math.sin), "cos": wrap_trig(math.cos), "tan": wrap_trig(math.tan),
             "asin": wrap_trig(math.asin), "acos": wrap_trig(math.acos), "atan": wrap_trig(math.atan),
             "sinh": math.sinh, "cosh": math.cosh, "tanh": math.tanh,
-
             # Logarithmic and exponential
             "log": math.log, "log10": math.log10, "log2": math.log2, "exp": math.exp,
-
             # Constants
             "pi": math.pi, "e": math.e
         }
-
-        result = eval(expr, {"__builtins__": None}, allowed_names)
+        result = safe_eval(expr, allowed_names)
         display = format_result(result)
         print(f"{GREEN}# Result: {display}{RESET}")
         calc_history.append(f"{expr} = {display}")
-
     except ZeroDivisionError:
         print(f"{RED}# Error: Cannot divide by zero!{RESET}")
     except ValueError as e:
@@ -167,7 +176,6 @@ def evaluate_expression(expr):
         print(f"{RED}# Error: Invalid syntax in expression!{RESET}")
     except Exception as e:
         print(f"{RED}# Error: {e}{RESET}")
-
 def basic_operation(op_name, a, b, operation):
     """Perform basic operation with formatting."""
     try:
@@ -178,56 +186,47 @@ def basic_operation(op_name, a, b, operation):
         print(f"{RED}# Error: Cannot divide by zero!{RESET}")
     except Exception as e:
         print(f"{RED}# Error: {e}{RESET}")
-
 def demo_mode():
     """Run demonstration of calculator features."""
     print(f"{CYAN}=== CALCULATOR DEMO MODE ==={RESET}")
     demo_expressions = [
         "2 + 3 * 4",
-        "sqrt(16) + 2^3", 
+        "sqrt(16) + 2^3",
         "sin(90) + cos(0)" if angle_mode == 'degrees' else "sin(pi/2) + cos(0)",
         "log10(100) + log(e)",
         "factorial(5) / 10",
         "pi * 2"
     ]
-
     for expr in demo_expressions:
         print(f"{YELLOW}# Demo: {expr}{RESET}")
         evaluate_expression(expr)
         print()
-
 def handle_command(cmd):
     """Handle user commands and operations."""
     global angle_mode, sci_mode
-
-    if cmd == '1':  # Addition
+    if cmd == '1': # Addition
         a, b = get_input()
-        if a is not None: 
+        if a is not None:
             basic_operation('+', a, b, lambda: a + b)
-
-    elif cmd == '2':  # Subtraction
+    elif cmd == '2': # Subtraction
         a, b = get_input()
-        if a is not None: 
+        if a is not None:
             basic_operation('-', a, b, lambda: a - b)
-
-    elif cmd == '3':  # Multiplication
+    elif cmd == '3': # Multiplication
         a, b = get_input()
-        if a is not None: 
+        if a is not None:
             basic_operation('*', a, b, lambda: a * b)
-
-    elif cmd == '4':  # Division
+    elif cmd == '4': # Division
         a, b = get_input()
-        if a is not None: 
+        if a is not None:
             basic_operation('/', a, b, lambda: a / b)
-
-    elif cmd == '5':  # Exponentiation
+    elif cmd == '5': # Exponentiation
         a, b = get_input()
-        if a is not None: 
+        if a is not None:
             basic_operation('^', a, b, lambda: a ** b)
-
-    elif cmd == '6':  # Basic Mode
+    elif cmd == '6': # Basic Mode
         print(f"{CYAN}=== BASIC CALCULATOR MODE ==={RESET}")
-        print("# Select operation: [1]+  [2]-  [3]*  [4]/  [5]^  [back] Return  :")
+        print("# Select operation: [1]+ [2]- [3]* [4]/ [5]^ [back] Return :")
         while True:
             sub_cmd = input(f"{YELLOW}# Basic: {RESET}").strip()
             if sub_cmd == 'back':
@@ -236,8 +235,7 @@ def handle_command(cmd):
                 handle_command(sub_cmd)
             else:
                 print(f"{RED}# Invalid option. Use 1-5 or 'back'{RESET}")
-
-    elif cmd == '7':  # Expression Mode
+    elif cmd == '7': # Expression Mode
         print(f"{CYAN}=== EXPRESSION CALCULATOR MODE ==={RESET}")
         print("# Enter mathematical expressions (type 'back' to return):")
         while True:
@@ -245,8 +243,7 @@ def handle_command(cmd):
             if expr.lower() == 'back':
                 break
             evaluate_expression(expr)
-
-    elif cmd == '8':  # Scientific Mode
+    elif cmd == '8': # Scientific Mode
         print(f"{CYAN}=== SCIENTIFIC CALCULATOR MODE ==={RESET}")
         print("# Advanced functions available. Type '?' for help or 'back' to return:")
         while True:
@@ -259,55 +256,43 @@ def handle_command(cmd):
                     print(f"{CYAN}- {v}{RESET}")
             else:
                 evaluate_expression(expr)
-
-    elif cmd == 'h':  # History
+    elif cmd == 'h': # History
         if not calc_history:
             print(f"{YELLOW}# No calculation history yet.{RESET}")
         else:
             print(f"{GREEN}=== CALCULATION HISTORY ==={RESET}")
             for i, h in enumerate(calc_history, 1):
                 print(f"{CYAN}{i:2d}. {h}{RESET}")
-
-    elif cmd == 'c':  # Clear History
+    elif cmd == 'c': # Clear History
         calc_history.clear()
         print(f"{GREEN}# History cleared.{RESET}")
-
-    elif cmd == 'cl':  # Clear Screen
+    elif cmd == 'cl': # Clear Screen
         os.system('cls' if os.name == 'nt' else 'clear')
         print_banner()
-
-    elif cmd == '?':  # Help
+    elif cmd == '?': # Help
         print(f"{GREEN}=== AVAILABLE FUNCTIONS ==={RESET}")
         for k, v in suggestions.items():
             print(f"{CYAN}- {v}{RESET}")
-
-    elif cmd == 'm':  # Toggle Angle Mode
+    elif cmd == 'm': # Toggle Angle Mode
         angle_mode = 'degrees' if angle_mode == 'radians' else 'radians'
         print(f"{GREEN}# Angle mode set to: {YELLOW}{angle_mode}{RESET}")
-
-    elif cmd == 's':  # Toggle Scientific Notation
+    elif cmd == 's': # Toggle Scientific Notation
         sci_mode = not sci_mode
         print(f"{GREEN}# Scientific notation: {YELLOW}{'ON' if sci_mode else 'OFF'}{RESET}")
-
-    elif cmd == 'demo':  # Demo Mode
+    elif cmd == 'demo': # Demo Mode
         demo_mode()
-
-    elif cmd == 'x':  # Exit
+    elif cmd == 'x': # Exit
         print(f"{CYAN}# Exiting Calculator. See you next time. Goodbye! :){RESET}")
         return False
-
-    else:  # Treat as expression
+    else: # Treat as expression
         evaluate_expression(cmd)
-
     return True
-
 def main():
     """Main calculator function."""
     os.system('cls' if os.name == 'nt' else 'clear')
     print_banner()
     print(f"{GREEN}# Calculator started successfully! All features available.{RESET}")
     print(f"{YELLOW}# Current settings: Angle mode = {angle_mode}, Scientific notation = {'ON' if sci_mode else 'OFF'}{RESET}\n")
-
     while True:
         try:
             cmd = input(f"{BLUE}Calculator> {RESET}").strip()
@@ -320,6 +305,5 @@ def main():
             break
         except Exception as e:
             print(f"{RED}# Unexpected error: {e}{RESET}")
-
 if __name__ == '__main__':
     main()
