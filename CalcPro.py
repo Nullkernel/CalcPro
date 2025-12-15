@@ -1,6 +1,7 @@
 import re
 import math
 import os
+import sys
 
 # Global configuration
 angle_mode = 'radians'
@@ -113,40 +114,68 @@ def cbrt(x):
     """Calculate cube root of x."""
     return x ** (1/3) if x >= 0 else -((-x) ** (1/3))
 
-def safe_eval(expr, allowed_names):
+def safe_eval(expr, allowed_names, max_depth=100):
     """Safely evaluate basic mathematical expressions with custom function support."""
     import ast
-    allowed_nodes = (
-        ast.Expression, ast.BinOp, ast.UnaryOp, ast.Num, ast.Constant,
-        ast.Load, ast.Call, ast.Name, ast.Pow, ast.Mult, ast.Div, ast.Add, ast.Sub, ast.Mod, ast.USub
-    )
-    class SafeEval(ast.NodeVisitor):
-        def visit(self, node):
-            if not isinstance(node, allowed_nodes):
-                raise ValueError(f"Unsafe node: {type(node).__name__}")
-            return super().visit(node)
-        def visit_Name(self, node):
-            if node.id not in allowed_names:
-                raise NameError(f"Unknown function or constant: {node.id}")
-        def visit_Call(self, node):
-            if not isinstance(node.func, ast.Name) or node.func.id not in allowed_names:
-                raise NameError(f"Unknown function: {getattr(node.func,'id',None)}")
-            self.generic_visit(node)
-    tree = ast.parse(expr, mode='eval')
-    SafeEval().visit(tree)
-    return eval(compile(tree, filename="<ast>", mode="eval"), {"__builtins__":None}, allowed_names)
+    
+    # Set recursion limit to prevent DoS attacks
+    old_limit = sys.getrecursionlimit()
+    sys.setrecursionlimit(max_depth)
+    
+    try:
+        # Explicitly list all allowed AST node types
+        allowed_nodes = (
+            ast.Expression, ast.BinOp, ast.UnaryOp, ast.Load, ast.Call, ast.Name,
+            # Explicitly list operators
+            ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Pow, ast.Mod, ast.USub, ast.UAdd,
+            ast.FloorDiv,  # Floor division
+            # For Python 3.8+
+            ast.Constant,
+            # For Python < 3.8
+            ast.Num
+        )
+        
+        class SafeEval(ast.NodeVisitor):
+            def visit(self, node):
+                if not isinstance(node, allowed_nodes):
+                    raise ValueError(f"Unsafe node: {type(node).__name__}")
+                return super().visit(node)
+            
+            def visit_Name(self, node):
+                if node.id not in allowed_names:
+                    raise NameError(f"Unknown function or constant: {node.id}")
+            
+            def visit_Call(self, node):
+                if not isinstance(node.func, ast.Name) or node.func.id not in allowed_names:
+                    raise NameError(f"Unknown function: {getattr(node.func,'id',None)}")
+                self.generic_visit(node)
+        
+        tree = ast.parse(expr, mode='eval')
+        SafeEval().visit(tree)
+        return eval(compile(tree, filename="<ast>", mode="eval"), {"__builtins__": None}, allowed_names)
+    
+    finally:
+        # Restore original recursion limit
+        sys.setrecursionlimit(old_limit)
 
 def evaluate_expression(expr):
     """Evaluate mathematical expression safely with extended functions."""
-    if not re.match(r'^[0-9a-zA-Z+\-*/.^() x]*$', expr):
+    # Pre-process 'x' to '*' for validation
+    validation_expr = expr.replace('x', '*')
+    
+    # Tightened regex - only allow safe mathematical characters
+    if not re.match(r'^[0-9a-zA-Z+\-*/.^() ]*$', validation_expr):
         print(f"{RED}# Error: Invalid characters in expression!{RESET}")
         return
+    
     if not is_parentheses_balanced(expr):
         print(f"{RED}# Error: Unmatched parentheses in expression!{RESET}")
         return
+    
     try:
         # Replace common operators
         expr = expr.replace('x', '*').replace('^', '**')
+        
         # Extended allowed functions
         allowed_names = {
             # Basic math
@@ -162,10 +191,12 @@ def evaluate_expression(expr):
             # Constants
             "pi": math.pi, "e": math.e
         }
+        
         result = safe_eval(expr, allowed_names)
         display = format_result(result)
         print(f"{GREEN}# Result: {display}{RESET}")
         calc_history.append(f"{expr} = {display}")
+    
     except ZeroDivisionError:
         print(f"{RED}# Error: Cannot divide by zero!{RESET}")
     except ValueError as e:
@@ -174,8 +205,11 @@ def evaluate_expression(expr):
         print(f"{RED}# Error: Unknown function or variable! {e}{RESET}")
     except SyntaxError:
         print(f"{RED}# Error: Invalid syntax in expression!{RESET}")
+    except RecursionError:
+        print(f"{RED}# Error: Expression too complex (recursion depth exceeded)!{RESET}")
     except Exception as e:
         print(f"{RED}# Error: {e}{RESET}")
+
 def basic_operation(op_name, a, b, operation):
     """Perform basic operation with formatting."""
     try:
