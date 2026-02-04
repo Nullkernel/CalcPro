@@ -1,27 +1,27 @@
-# 🧮 CalcPro (Advanced Calculator):
+# `CalcPro` (Advanced Calculator):
 
 A feature-rich, colorful command-line calculator with multiple operation modes, scientific functions, and an intuitive user interface.
 
-## ✨ Features:
+## Features:
 
-### 🔬 Advanced Scientific Functions:
-- **Trigonometric**: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh
-- **Mathematical**: sqrt, cbrt, factorial, abs, ceil, floor, round
-- **Logarithmic**: log, log10, log2, exp
-- **Constants**: pi, e
+### Advanced Scientific Functions:
+- **Trigonometric**: `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `sinh`, `cosh`, `tanh`
+- **Mathematical**: `sqrt`, `cbrt`, `factorial`, `abs`, `ceil`, `floor`, `round`
+- **Logarithmic**: `log`, `log10`, `log2`, `exp`
+- **Constants**: `pi`, `e`
 
-### 📊 Multiple Operation Modes:
+### Multiple Operation Modes:
 - **Basic Mode** - Simple numbered operations (addition, subtraction, multiplication, division, exponentiation).
 - **Expression Mode** - Direct mathematical expression input with complex calculations.
 - **Scientific Mode** - Advanced functions and constants with comprehensive help system.
 
-### 🎨 User Interface Features:
+### User Interface Features:
 - **Colorized terminal output** with beautiful ASCII art banners.
 - **Color-coded results** (green for results, red for errors, cyan for prompts).
 - **Clean input/output formatting** for enhanced readability.
 - **Structured operation menus** for easy navigation.
 
-### ⚙️ Smart Features:
+### Smart Features:
 - **Calculation history** with storage and viewing capabilities.
 - **Settings management**: degree/radian mode toggle, scientific notation toggle.
 - **Enhanced error handling** with descriptive error messages.
@@ -31,13 +31,13 @@ A feature-rich, colorful command-line calculator with multiple operation modes, 
 - **Built-in help system** with function descriptions and examples.
 - **Screen clearing** and history management.
 
-### 🛠️ Safety & Validation:
+### Safety & Validation:
 - Input validation for numeric values.
 - Expression syntax validation.
 - Safe evaluation using restricted eval with allowed functions only.
 - Comprehensive error handling for division by zero, invalid inputs, and syntax errors.
 
-## 🚀 Installation:
+## Installation:
 
 ### Prerequisites:
 - Python 3.6 (or) higher.
@@ -56,7 +56,7 @@ A feature-rich, colorful command-line calculator with multiple operation modes, 
    chmod +x CalcPro.py
    ```
 
-## 💻 Usage:
+## Usage:
 
 ### Starting the Calculator:
 ```bash
@@ -94,20 +94,20 @@ Calculator> (2 + 3) * sqrt(25) / factorial(3)
 ```
 
 ### Available Commands:
-| Command | Description |
-|---------|-------------|
-| `1-5` | Basic arithmetic operations |
-| `6` | Enter Basic Mode |
-| `7` | Enter Expression Mode |
-| `8` | Enter Scientific Mode |
-| `h` | View calculation history |
-| `c` | Clear calculation history |
-| `cl` | Clear screen |
-| `?` | Show help and available functions |
-| `m` | Toggle degree/radian mode |
-| `s` | Toggle scientific notation |
-| `demo` | Run demonstration mode |
-| `x` | Exit calculator |
+| Command | Description                       |
+| ------- | --------------------------------- |
+| `1-5`   | Basic arithmetic operations       |
+| `6`     | Enter Basic Mode                  |
+| `7`     | Enter Expression Mode             |
+| `8`     | Enter Scientific Mode             |
+| `h`     | View calculation history          |
+| `c`     | Clear calculation history         |
+| `cl`    | Clear screen                      |
+| `?`     | Show help and available functions |
+| `m`     | Toggle degree/radian mode         |
+| `s`     | Toggle scientific notation        |
+| `demo`  | Run demonstration mode            |
+| `x`     | Exit calculator                   |
 
 ### Scientific Functions Reference:
 ```bash
@@ -130,7 +130,7 @@ pi, e
 pow(x,y), x^y, x**y
 ```
 
-## 🔧 Configuration:
+## Configuration:
 
 ### Angle Mode:
 - **Radians** (default): For mathematical calculations
@@ -142,7 +142,7 @@ pow(x,y), x^y, x**y
 - **ON**: Scientific notation (e.g., 1.234567e+02)
 - Toggle with `s` command
 
-## 📝 Examples:
+## Examples:
 
 ### Basic Calculations:
 ```bash
@@ -179,7 +179,7 @@ Calculator> pi * 2
 # Result: 6.283185307179586
 ```
 
-## 🎯 Error Handling:
+## Error Handling:
 
 The calculator provides comprehensive error handling for:
 - **Invalid numeric input**: Clear error messages for non-numeric values.
@@ -189,17 +189,17 @@ The calculator provides comprehensive error handling for:
 - **Unknown functions**: Helpful suggestions for valid function names.
 - **Factorial of negative numbers**: Mathematical domain validation.
 
-## 🎨 Visual Features:
+## Visual Features:
 
 - **Colorful ASCII art banner** on startup
 - **Color-coded output**:
-  - 🟢 **Green**: Results and success messages.
-  - 🔴 **Red**: Error messages.
-  - 🔵 **Blue**: Section headers.
-  - 🟡 **Yellow**: Input prompts and warnings.
-  - 🔵 **Cyan**: Options and commands.
+  - **Green**: Results and success messages.
+  - **Red**: Error messages.
+  - **Blue**: Section headers.
+  - **Yellow**: Input prompts and warnings.
+  - **Cyan**: Options and commands.
 
-## 🏃‍♂️ Quick Start Guide:
+## Quick Start Guide:
 
 1. **Start the calculator**: `python CalcPro.py`
 2. **Try a simple calculation**: Enter `2 + 3`
@@ -208,7 +208,7 @@ The calculator provides comprehensive error handling for:
 5. **Get help**: Enter `?`
 6. **Try demo mode**: Enter `demo`
 
-## 🤝 Contributing:
+## Contributing:
 
 This calculator is designed to be extensible. You can easily add new functions by:
 
@@ -216,11 +216,11 @@ This calculator is designed to be extensible. You can easily add new functions b
 2. Adding documentation to the `suggestions` dictionary.
 3. Implementing any custom mathematical functions as needed.
 
-## 📄 License:
+## License:
 
 This project is open source and available under standard GNU General Public License v3.0 licensing terms.
 
-## 🆘 Support:
+## Support:
 
 If you encounter any issues:
 1. Check that you're using Python 3.6 (or) higher.
@@ -231,4 +231,4 @@ If you encounter any issues:
 
 ---
 
-**Happy Calculating!** 🎉
+**Happy Calculating!**
