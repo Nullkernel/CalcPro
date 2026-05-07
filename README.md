@@ -47,7 +47,7 @@ A feature-rich, colorful command-line calculator with multiple operation modes, 
 1. **Download the calculator**:
    ```bash
    # Clone or download the CalcPro.py file.
-   wget -L https://raw.githubusercontent.com/Nullkernel/CalcPro/main/CalcPro.py
+   wget -L https://raw.githubusercontent.com/amalbijoy/CalcPro/main/CalcPro.py
    # or simply copy the CalcPro.py file to your desired directory.
    ```
 
